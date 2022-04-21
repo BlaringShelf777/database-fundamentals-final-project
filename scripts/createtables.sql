@@ -1,8 +1,9 @@
-drop table if exists usuario;
-drop table if exists cliente;
-drop table if exists endereco;
-drop table if exists enderecoCliente;
 drop table if exists produto;
+drop table if exists enderecoCliente;
+drop table if exists endereco;
+drop table if exists lojista;
+drop table if exists cliente;
+drop table if exists usuario;
 
 
 create table usuario(
@@ -18,6 +19,14 @@ rg char(10) not null,
 code char(3) not null,
 primary key(codu),
 foreign key(codu) references usuario);
+
+create table lojista(
+codu char(3) not null,
+cnpj char(9) not null unique,
+nome-fantasia char(30) not null,
+primary key(codu)
+foreign key(codu) references usuario
+);
 
 
 create table endereco(
