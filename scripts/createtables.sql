@@ -99,7 +99,7 @@ codfil char(3) not null,
 codp char(3) not null,
 codpv char(3) not null,
 estoque int not null check (estoque>=0),
-preco numeric(5,2) not null check (preco >= 0),
+preco numeric(5) not null check (preco >= 0),
 primary key(codpv),
 foreign key(codfil) references filial,
 foreign key(codp) references produto
@@ -125,8 +125,8 @@ foreign key (codc) references cliente
 create table produtos_carrinho(
 codcar char(3) not null,
 codp char(3) not null,
-preco numeric(5,2) not null check (preco>0),
-frete numeric(5,2) not null check (frete>=0),
+preco numeric(5) not null check (preco>0),
+frete numeric(5) not null check (frete>=0),
 primary key(codcar,codp),
 foreign key(codcar) references carrinho,
 foreign key(codp) references produto
@@ -135,7 +135,7 @@ foreign key(codp) references produto
 create table pedido(
 codped char(3) not null,
 codc char(3) not null,
-preco numeric(5,2) not null check (preco>0),
+preco numeric(5) not null check (preco>0),
 metodo_pagamento char(6) not null check(metodo_pagamento in ('cartao','boleto')),
 data_compra date not null,
 primary key(codped),
@@ -193,14 +193,13 @@ insert into endereco_cliente values('c03','e08',false);
 insert into filial values('l01','f01','1','e06');
 insert into filial values('l01','f02','2','e04');
 insert into filial values('l01','f03','3','e05');
-insert into filial values('l01','f04','4','e10');
-insert into filial values('l02','f05','1','e11');
-insert into filial values('l02','f06','2','e12');
+insert into filial values('l02','f04','1','e11');
+insert into filial values('l02','f05','2','e12');
 
 -- Categoria
 insert into categoria values('c01','celular');
 insert into categoria values('c02','televisor');
-insert into categoria values('c03','liquidificador');
+insert into categoria values('c03','air fryer');
 insert into categoria values('c04','processador');
 insert into categoria values('c05','eletrodomestico');
 insert into categoria values('c06','eletronico');
@@ -220,8 +219,8 @@ insert into fornecedor values('nike');
 -- Produtos
 insert into produto values('p01','galaxy 12','128gb','samsung');
 insert into produto values('p02','galaxy 12','64gb','samsung');
-insert into produto values('p03','air fryer','5l','tramontina');
-insert into produto values('p04','air fryer','5l','mondial');
+insert into produto values('p03','air fryer gold','5l','tramontina');
+insert into produto values('p04','air fryer premium','5l','mondial');
 insert into produto values('p05','air fryer','3l','mondial');
 insert into produto values('p06','mixer','preto','mondial');
 insert into produto values('p07','mixer','vermelho','mondial');
@@ -233,6 +232,74 @@ insert into produto values('p12','chuteira next','39','nike');
 insert into produto values('p13','chuteira next','41','nike');
 insert into produto values('p15','ultraboost','41','adidas');
 insert into produto values('p16','ultraboost','34','adidas');
+
+
+-- Categoria Produtos
+insert into categoria_produto values('p01','c01');
+insert into categoria_produto values('p01','c06');
+insert into categoria_produto values('p02','c01');
+insert into categoria_produto values('p02','c06');
+insert into categoria_produto values('p03','c03');
+insert into categoria_produto values('p03','c05');
+insert into categoria_produto values('p04','c03');
+insert into categoria_produto values('p04','c05');
+insert into categoria_produto values('p05','c03');
+insert into categoria_produto values('p05','c05');
+insert into categoria_produto values('p06','c04');
+insert into categoria_produto values('p06','c05');
+insert into categoria_produto values('p07','c04');
+insert into categoria_produto values('p07','c05');
+insert into categoria_produto values('p08','c07');
+insert into categoria_produto values('p08','c09');
+insert into categoria_produto values('p09','c07');
+insert into categoria_produto values('p09','c09');
+insert into categoria_produto values('p10','c07');
+insert into categoria_produto values('p10','c09');
+insert into categoria_produto values('p11','c07');
+insert into categoria_produto values('p11','c08');
+insert into categoria_produto values('p11','c09');
+insert into categoria_produto values('p12','c07');
+insert into categoria_produto values('p12','c08');
+insert into categoria_produto values('p12','c09');
+insert into categoria_produto values('p13','c07');
+insert into categoria_produto values('p13','c08');
+insert into categoria_produto values('p13','c09');
+insert into categoria_produto values('p15','c07');
+insert into categoria_produto values('p15','c08');
+insert into categoria_produto values('p16','c07');
+insert into categoria_produto values('p16','c08');
+
+
+-- Produtos Vendidos
+insert into produto_vendido values('f01','p01','v01','100','3500.98');
+insert into produto_vendido values('f01','p02','v02','30','2700.98');
+insert into produto_vendido values('f01','p03','v03','1000','799.00');
+insert into produto_vendido values('f01','p04','v04','1100','350.00');
+insert into produto_vendido values('f01','p05','v05','0','299.00');
+insert into produto_vendido values('f01','p06','v06','390','500.00');
+insert into produto_vendido values('f01','p07','v07','10','400.79');
+
+insert into produto_vendido values('f02','p02','v08','5','3000.00');
+insert into produto_vendido values('f02','p03','v09','450','799.00');
+insert into produto_vendido values('f02','p04','v10','981','250.00');
+insert into produto_vendido values('f02','p05','v11','192','200.00');
+
+insert into produto_vendido values('f03','p03','v12','10','899.00');
+insert into produto_vendido values('f03','p04','v13','11','340.00');
+insert into produto_vendido values('f03','p05','v14','39','294.00');
+insert into produto_vendido values('f03','p06','v15','129','278.00');
+insert into produto_vendido values('f03','p07','v16','3','400.79');
+
+insert into produto_vendido values('f04','p08','v17','100','250.00');
+insert into produto_vendido values('f04','p09','v18','160','210.00');
+insert into produto_vendido values('f04','p10','v19','300','300.00');
+insert into produto_vendido values('f04','p15','v20','9','900.79');
+
+insert into produto_vendido values('f05','p11','v21','400','390.00');
+insert into produto_vendido values('f05','p12','v22','200','390.00');
+insert into produto_vendido values('f05','p13','v23','600','340.00');
+insert into produto_vendido values('f05','p15','v24','200','899.99');
+insert into produto_vendido values('f05','p16','v25','100','810.39');
 
 
 
