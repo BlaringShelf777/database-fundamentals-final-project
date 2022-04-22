@@ -120,27 +120,31 @@ create table carrinho(
 codcar bigserial not null,
 codc bigserial not null,
 finalizado bool not null,
-primary key (codcar),
+primary key (codcar,codc),
 foreign key (codc) references cliente
 );
 
 create table produtos_carrinho(
 codcar bigserial not null,
+codc bigserial not null,
 codp bigserial not null,
 preco numeric(5) not null check (preco>0),
 frete numeric(5) not null check (frete>=0),
 primary key(codcar,codp),
-foreign key(codcar) references carrinho,
-foreign key(codp) references produto
+foreign key(codcar,codc) references carrinho,
+foreign key(codp) references produto,
+foreign key (codc) references cliente
 );
 
 create table pedido(
 codcar bigserial not null,
+codc bigserial not null,
 preco numeric(5) not null check (preco>0),
 metodo_pagamento char(6) not null check(metodo_pagamento in ('cartao','boleto')),
 data_compra date not null,
-primary key(codcar),
-foreign key(codcar) references carrinho
+primary key(codcar,codc),
+foreign key(codcar,codc) references carrinho,
+foreign key(codc) references cliente
 );
 
 
@@ -305,28 +309,28 @@ insert into avaliacao values('03','09','5');
 insert into avaliacao values('03','12','2');
 
 -- Carrinho
-insert into carrinho values('01','01',false);
-insert into carrinho values('02','01',true);
+insert into carrinho values('01','01',true);
+insert into carrinho values('02','01',false);
 
-insert into carrinho values('03','02',true);
+insert into carrinho values('01','02',true);
 
 -- Produtos Carrinho
-insert into produtos_carrinho values('01','07','400.79','0.00');
+insert into produtos_carrinho values('01','01','07','400.79','0.00');
 
-insert into produtos_carrinho values('02','01','4000','17.98');
-insert into produtos_carrinho values('02','08','350.27','32.00');
+insert into produtos_carrinho values('02','01','01','4000','17.98');
+insert into produtos_carrinho values('02','01','08','350.27','32.00');
 
-insert into produtos_carrinho values('03','01','3200','0.00');
+insert into produtos_carrinho values('01','02','01','3200','0.00');
 
 -- Pedidos
-insert into pedido values('02','4350.27','cartao','2021-01-01');
-insert into pedido values('03','3200','boleto','2021-11-30');
+insert into pedido values('01','01','400.79','cartao','2021-01-01');
+insert into pedido values('01','02','3200','boleto','2021-11-30');
 
 
 -- Produtos comprados
 create view produtos_comprados
 as select *
-from carrinho join produtos_carrinho using(codcar)
+from carrinho join produtos_carrinho using(codcar,codc)
 where carrinho.finalizado = true
 
 --Criar mais views
