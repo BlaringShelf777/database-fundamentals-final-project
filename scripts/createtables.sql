@@ -116,14 +116,15 @@ foreign key (codp) references produto
 );
 
 create table carrinho(
-codcar char(3) not null,
+codcar char(5) not null,
 codc char(3) not null,
+finalizado bool not null,
 primary key (codcar),
 foreign key (codc) references cliente
 );
 
 create table produtos_carrinho(
-codcar char(3) not null,
+codcar char(5) not null,
 codp char(3) not null,
 preco numeric(5) not null check (preco>0),
 frete numeric(5) not null check (frete>=0),
@@ -133,24 +134,14 @@ foreign key(codp) references produto
 );
 
 create table pedido(
-codped char(3) not null,
-codc char(3) not null,
+codcar char(5) not null,
 preco numeric(5) not null check (preco>0),
 metodo_pagamento char(6) not null check(metodo_pagamento in ('cartao','boleto')),
 data_compra date not null,
-primary key(codped),
-foreign key(codc) references cliente
+primary key(codcar),
+foreign key(codcar) references carrinho
 );
 
-create table produto_pedido(
-codped char(3) not null,
-codp char(3) not null,
-preco numeric(5,2) not null check (preco>0),
-frete numeric(5,2) not null check (frete>=0),
-primary key(codped,codp),
-foreign key(codped) references pedido,
-foreign key(codp) references produto
-);
 
 -- Criando usuarios
 insert into usuario values ('u01','Fulano Silva', 'fulano@gmail.com');
@@ -312,5 +303,29 @@ insert into avaliacao values('c02','p04','4');
 insert into avaliacao values('c03','p09','5');
 insert into avaliacao values('c03','p12','2');
 
+-- Carrinho
+insert into carrinho values('car01','c01',false);
+insert into carrinho values('car02','c01',true);
+
+insert into carrinho values('car03','c02',true);
+
+-- Produtos Carrinho
+insert into produtos_carrinho values('car01','p07','400.79','0.00');
+
+insert into produtos_carrinho values('car02','p01','4000','17.98');
+insert into produtos_carrinho values('car02','p08','350.27','32.00');
+
+insert into produtos_carrinho values('car03','p01','3200','0.00');
+
+-- Pedidos
+insert into pedido values('car02','4350.27','cartao','2021-01-01');
+insert into pedido values('car03','3200','boleto','2021-11-30');
 
 
+-- Produtos comprados
+create view produtos_comprados
+as select *
+from carrinho join produtos_carrinho using(codcar)
+where carrinho.finalizado = true
+
+--Criar mais views
