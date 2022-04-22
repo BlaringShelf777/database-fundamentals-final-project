@@ -109,7 +109,7 @@ create table avaliacao(
 codc char(3) not null,
 codp char(3) not null,
 nota int not null check (nota>=0 and nota<=5),
-descricao char(140) not null,
+descricao char(140),
 primary key (codc, codp),
 foreign key (codc) references cliente,
 foreign key (codp) references produto
@@ -301,6 +301,16 @@ insert into produto_vendido values('f05','p13','v23','600','340.00');
 insert into produto_vendido values('f05','p15','v24','200','899.99');
 insert into produto_vendido values('f05','p16','v25','100','810.39');
 
+-- Avaliacoes 
+insert into avaliacao values('c01','p01','4','Viciou a bateria! :C');
+insert into avaliacao values('c01','p03','5','Ajudou muito!');
+insert into avaliacao values('c01','p06','3','Lamina sem fio :/');
+
+insert into avaliacao values('c02','p01','5');
+insert into avaliacao values('c02','p04','4');
+
+insert into avaliacao values('c03','p09','5');
+insert into avaliacao values('c03','p12','2');
 
 
 
