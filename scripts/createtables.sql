@@ -1,3 +1,5 @@
+drop view if exists filial_lojista;
+drop view if exists produto_vendido_por_filial;
 drop view if exists produtos_comprados;
 drop table if exists produto_pedido;
 drop table if exists pedido;
@@ -28,7 +30,7 @@ create table cliente(
 codu bigserial not null,
 codc bigserial not null unique,
 cpf char(11) not null unique,
-rg char(10) not null,
+rg char(10) not null unique,
 primary key(codc),
 foreign key(codu) references usuario);
 
@@ -127,19 +129,19 @@ foreign key (codc) references cliente
 create table produtos_carrinho(
 codcar bigserial not null,
 codc bigserial not null,
-codp bigserial not null,
+codpv bigserial not null,
 preco numeric(5) not null check (preco>0),
 frete numeric(5) not null check (frete>=0),
-primary key(codcar,codp),
+primary key(codcar,codpv),
 foreign key(codcar,codc) references carrinho,
-foreign key(codp) references produto,
+foreign key(codpv) references produto_vendido,
 foreign key (codc) references cliente
 );
 
 create table pedido(
 codcar bigserial not null,
 codc bigserial not null,
-preco numeric(5) not null check (preco>0),
+custo_total numeric(5) not null check (custo_total>0),
 metodo_pagamento char(6) not null check(metodo_pagamento in ('cartao','boleto')),
 data_compra date not null,
 primary key(codcar,codc),
@@ -316,13 +318,16 @@ insert into carrinho values('01','02',true);
 
 -- Produtos Carrinho
 insert into produtos_carrinho values('01','01','07','400.79','0.00');
+insert into produtos_carrinho values('01','01','08','3200.00','15.00');
+
 
 insert into produtos_carrinho values('02','01','01','4000','17.98');
 insert into produtos_carrinho values('02','01','08','350.27','32.00');
 
-insert into produtos_carrinho values('01','02','01','3200','0.00');
+insert into produtos_carrinho values('01','02','01','4300','0.00');
 
 -- Pedidos
+-- Ideia, tirar preço total do banco, usar agrupamento para isso
 insert into pedido values('01','01','400.79','cartao','2021-01-01');
 insert into pedido values('01','02','3200','boleto','2021-11-30');
 
@@ -330,7 +335,21 @@ insert into pedido values('01','02','3200','boleto','2021-11-30');
 -- Produtos comprados
 create view produtos_comprados
 as select *
-from carrinho join produtos_carrinho using(codcar,codc)
+from pedido natural join produtos_carrinho natural join carrinho natural join produto_vendido natural join produto
 where carrinho.finalizado = true
 
---Criar mais views
+-- Produto vendido por filial
+create view produto_vendido_por_filial 
+as select * 
+from usuario natural join lojista natural join filial natural join produto_vendido 
+
+
+
+create view filial_lojista
+as select *
+from usuario natural join lojista natural join filial
+
+
+
+
+
