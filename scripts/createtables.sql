@@ -332,6 +332,7 @@ insert into produtos_carrinho values('01','02','01','4300','0.00');
 -- Ideia, tirar preço total do banco, usar agrupamento para isso
 insert into pedido values('01','01','400.79','cartao','2021-01-01');
 insert into pedido values('01','02','3200','boleto','2021-11-30');
+insert into pedido values('02','01','3200','cartao','2021-11-30');
 
 
 -- Produtos comprados
