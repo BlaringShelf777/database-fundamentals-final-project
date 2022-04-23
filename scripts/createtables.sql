@@ -312,7 +312,9 @@ insert into avaliacao values('03','12','2');
 
 -- Carrinho
 insert into carrinho values('01','01',true);
-insert into carrinho values('02','01',false);
+insert into carrinho values('02','01',true);
+insert into carrinho values('03','01',false);
+
 
 insert into carrinho values('01','02',true);
 
@@ -322,7 +324,7 @@ insert into produtos_carrinho values('01','01','08','3200.00','15.00');
 
 
 insert into produtos_carrinho values('02','01','01','4000','17.98');
-insert into produtos_carrinho values('02','01','08','350.27','32.00');
+insert into produtos_carrinho values('02','01','25','850.27','32.00');
 
 insert into produtos_carrinho values('01','02','01','4300','0.00');
 
@@ -342,7 +344,6 @@ where carrinho.finalizado = true
 create view produto_vendido_por_filial 
 as select * 
 from usuario natural join lojista natural join filial natural join produto_vendido 
-
 
 
 create view filial_lojista
