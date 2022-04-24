@@ -178,7 +178,8 @@ insert into endereco values('08','15053327','9090','rs','apto 12');
 insert into endereco values('09','15053328','9090','rs','apartamento 51');
 insert into endereco values('10','15053329','751','sp');
 insert into endereco values('11','15053331','451','rj');
-insert into endereco values('12','15053332','2051','rj');
+insert into endereco values('12','15053332','2051','rs');
+insert into endereco values('13','15053333','2009','rs');
 
 -- Enderecos Clientes
 insert into endereco_cliente values('01','01',true);
