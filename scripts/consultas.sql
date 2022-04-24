@@ -111,15 +111,15 @@ from
 where
 	codc = '1';
 
--- Quero saber se já comprei um {produto} antes
-select
-	count(pv.codp) > 0
-from
-	produtos_comprados pc
-	join produto_vendido pv using(codpv)
-where
-	codc = '1'
-	and codp = '1';
+-- Quero saber todos os produtos de uma categoria ordenados por nota, querendo saber apeans produtos ja avaliados antes
+select p.nome , p.modelo , avg(nota)
+from produto p 
+	join avaliacao a using(codp)
+	join categoria_produto cp using(codp)
+	join categoria c using (codcat)
+where c.nome = 'eletrodomestico'
+group by p.codp , p.nome, p.modelo 
+order by  avg(nota) desc
 
 -- Eu como um cliente quero poder ver todos os produtos vendidos por um {fornecedor}
 select
