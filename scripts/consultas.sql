@@ -161,3 +161,13 @@ where
 			join endereco_cliente ec using(codc)
 			join endereco e2 using(code)
 	);
+
+-- Quero saber os produtos no meu carrinho aberto
+select 
+	p.nome , pc.preco , pc.frete 
+from cliente c join carrinho c2 using(codc)
+join produtos_carrinho pc using(codcar,codc)
+join produto_vendido pv using(codpv)
+join produto p using(codp)
+where finalizado=false and codc='1'
+
