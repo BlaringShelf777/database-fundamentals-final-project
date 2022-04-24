@@ -141,7 +141,6 @@ foreign key (codc) references cliente
 create table pedido(
 codcar bigserial not null,
 codc bigserial not null,
-custo_total numeric(5) not null check (custo_total>0),
 metodo_pagamento char(6) not null check(metodo_pagamento in ('cartao','boleto')),
 data_compra date not null,
 primary key(codcar,codc),
@@ -156,6 +155,7 @@ insert into usuario values ('02','Ciclano Costa','ciclano@gmail.com');
 insert into usuario values ('03','Fulano Santos','fulano123@gmail.com');
 insert into usuario values ('04','Ricardo Eletro','ricardo@eletro.com');
 insert into usuario values ('05','Loja de Esportes','lojadeesportes@esportes.com');
+insert into usuario values ('06','Tche Produtos','tche_produtos@gmail.com');
 
 -- Criando clientes
 insert into cliente values('01','01','99999999901','9999999901');
@@ -165,6 +165,7 @@ insert into cliente values('03','03','99999999903','9999999903');
 -- Criando lojistas
 insert into lojista values('04','01','000000001');
 insert into lojista values('05','02','000000002');
+insert into lojista values('06','03','000000003');
 
 -- Criando enderecos
 insert into endereco values('01','15053320','2500','rs');
@@ -194,6 +195,7 @@ insert into filial values('01','02','2','04');
 insert into filial values('01','03','3','05');
 insert into filial values('02','04','1','11');
 insert into filial values('02','05','2','12');
+insert into filial values('03','06','1','13');
 
 -- Categoria
 insert into categoria values('01','celular');
@@ -300,6 +302,10 @@ insert into produto_vendido values('05','13','23','600','340.00');
 insert into produto_vendido values('05','15','24','200','899.99');
 insert into produto_vendido values('05','16','25','100','810.39');
 
+---insert into produto_vendido values(codfil,codp,codpv,estoque,preco)/
+insert into produto_vendido values('06','08','26','300','299.99');
+insert into produto_vendido values('06','09','27','400','199.99');
+
 -- Avaliacoes 
 insert into avaliacao values('01','01','4','Viciou a bateria! :C');
 insert into avaliacao values('01','03','5','Ajudou muito!');
@@ -313,7 +319,9 @@ insert into avaliacao values('03','12','2');
 
 -- Carrinho
 insert into carrinho values('01','01',true);
-insert into carrinho values('02','01',false);
+insert into carrinho values('02','01',true);
+insert into carrinho values('03','01',false);
+
 
 insert into carrinho values('01','02',true);
 
@@ -323,32 +331,38 @@ insert into produtos_carrinho values('01','01','08','3200.00','15.00');
 
 
 insert into produtos_carrinho values('02','01','01','4000','17.98');
-insert into produtos_carrinho values('02','01','08','350.27','32.00');
+insert into produtos_carrinho values('02','01','25','850.27','32.00');
 
 insert into produtos_carrinho values('01','02','01','4300','0.00');
 
 -- Pedidos
 -- Ideia, tirar preço total do banco, usar agrupamento para isso
-insert into pedido values('01','01','400.79','cartao','2021-01-01');
-insert into pedido values('01','02','3200','boleto','2021-11-30');
+insert into pedido values('01','01','cartao','2021-01-01');
+insert into pedido values('01','02','boleto','2021-11-30');
+insert into pedido values('02','01','cartao','2021-11-30');
 
 
 -- Produtos comprados
 create view produtos_comprados
 as select *
-from pedido natural join produtos_carrinho natural join carrinho natural join produto_vendido natural join produto
-where carrinho.finalizado = true
+from 
+	pedido
+join carrinho using(codcar,codc)
+join produtos_carrinho using(codcar,codc)
+where carrinho.finalizado = true;
 
 -- Produto vendido por filial
 create view produto_vendido_por_filial 
 as select * 
-from usuario natural join lojista natural join filial natural join produto_vendido 
-
+from usuario natural join lojista natural join filial natural join produto_vendido;
 
 
 create view filial_lojista
 as select *
-from usuario natural join lojista natural join filial
+from 
+	usuario 
+join lojista using (codu)
+join filial using(codloj);
 
 
 

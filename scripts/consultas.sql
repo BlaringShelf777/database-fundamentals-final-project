@@ -1,18 +1,20 @@
 -- 1 Como um lojista, quero saber todos os produtos vendidos por minhas filiais
+
 select
-	pv.numero_filial,
+	pv.numero_filial ,
 	p.nome,
-	pv.preco,
+	pv.preco ,
 	p.modelo
 from
 	produto_vendido_por_filial pv
-	join produto p using(codp)
+join produto p
+		using(codp)
 where
 	pv.nome = 'Ricardo Eletro';
 
 -- 2 Como um lojista, quero saber quais filiais estao com um rendimento acima de um certo valor
 select
-	nome,
+	nome ,
 	numero_filial,
 	sum(pc.preco)
 from
@@ -28,7 +30,6 @@ group by
 	numero_filial
 having
 	sum(pc.preco) > 4000;
-
 -- 3 Quero premiar meus clientes fieis, ou seja, clientes que apenas compraram comigo
 select
 	distinct c.codu as cliente_fiel

@@ -1,8 +1,7 @@
 
 import express from 'express'
-import { Client } from 'pg'
 
-import { dbSettings } from './database/dbSettings'
+import client from './server'
 
 export const app = express()
 
@@ -10,11 +9,7 @@ app.use(express.json())
 
 // Just an example (to be removed)
 app.get('/', async (req, res) => {
-  const client = new Client(dbSettings)
+  const dbResponse1 = await client.query('SELECT * from Test')
 
-  await client.connect()
-
-  const dbResponse = await client.query('SELECT * from Test')
-
-  res.json(dbResponse)
+  res.json(dbResponse1.rows)
 })
