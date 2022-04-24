@@ -1,4 +1,4 @@
--- 1 Como um lojista, quero saber todos os produtos vendidos por minhas filiais
+--Como um lojista, quero saber todos os produtos vendidos por minhas filiais
 
 select
 	pv.numero_filial ,
@@ -10,9 +10,9 @@ from
 join produto p
 		using(codp)
 where
-	pv.nome = 'Ricardo Eletro';
+	pv.nome = 'Tche Produtos';
 
--- 2 Como um lojista, quero saber quais filiais estao com um rendimento acima de um certo valor
+--  Como um lojista, quero saber quais filiais estao com um rendimento acima de um certo valor
 select
 	nome ,
 	numero_filial,
@@ -29,8 +29,8 @@ group by
 	nome,
 	numero_filial
 having
-	sum(pc.preco) > 4000;
--- 3 Quero premiar meus clientes fieis, ou seja, clientes que apenas compraram comigo
+	sum(pc.preco) > 3000;
+--  Quero premiar meus clientes fieis, ou seja, clientes que apenas compraram comigo
 select
 	distinct c.codu as cliente_fiel
 from
@@ -55,7 +55,7 @@ where
 			fl.nome <> 'Ricardo Eletro'
 	);
 
---4 - Quero saber todos os lojistas que possuem filias apenas no RS(ou um estado especifico)
+-- Quero saber todos os lojistas que possuem filias apenas no RS(ou um estado especifico)
 select
 	distinct nome as lojista
 from
@@ -70,29 +70,6 @@ where
 			join endereco e2 using(code)
 		where
 			uf <> 'rs'
-	);
-
---Consulta com NOT EXISTS (revisar essa aqui com cuidado)
---5 - Quero saber se existe um {cliente} que nao realizou compras nem nenhuma filila de um  {lojista}
--- Tem que ser da forma TODOS ou NENHUM
-select
-	distinct c.codu
-from
-	cliente c
-	join pedido p using(codc)
-where
-	not exists (
-		select
-			*
-		from
-			filial_lojista
-			join produto_vendido pv2 using(codfil)
-			join produtos_carrinho pc2 using(codpv)
-			join carrinho c2 using(codcar, codc)
-		where
-			c2.finalizado = true
-			and c2.codc = c.codc
-			and nome = 'Tche Eletro'
 	);
 
 -- Desejo saber todos os lojistas que só tem filiais em estados onde nao há filiais de outros lojistas
@@ -118,7 +95,9 @@ where
 				where
 					f2.codloj = fl.codloj
 			)
-	) --6 - Quero saber todos os produtos comprados pro mim(um cliente) 
+	); 
+	
+-- Quero saber todos os produtos comprados pro mim(um cliente) 
 select
 	p.nome,
 	p.modelo,
@@ -132,7 +111,7 @@ from
 where
 	codc = '1';
 
---7 - Quero saber se já comprei um {produto} antes
+-- Quero saber se já comprei um {produto} antes
 select
 	count(pv.codp) > 0
 from
@@ -142,7 +121,7 @@ where
 	codc = '1'
 	and codp = '1';
 
---8 - Eu como um cliente quero poder ver todos os produtos vendidos por um {fornecedor}
+-- Eu como um cliente quero poder ver todos os produtos vendidos por um {fornecedor}
 select
 	p.nome,
 	p.modelo
@@ -152,7 +131,7 @@ from
 where
 	fornecedor = 'samsung';
 
---9 - Desejando saber a abraangencia de um {fornecedor}, quero todas as {categorias} que ele vende
+-- Desejando saber a abraangencia de um {fornecedor}, quero todas as {categorias} que ele vende
 select
 	c.nome
 from
@@ -165,7 +144,7 @@ where
 group by
 	c.nome;
 
---10 - Desejando saber qual filial esta mais perto do cliente, quero saber {filail} no mesmo uf que o {cliente}
+-- Desejando saber qual filial esta mais perto do cliente, quero saber {filail} no mesmo uf que o {cliente}
 select
 	numero_filial
 from
