@@ -1,4 +1,4 @@
--- 1
+-- 1 Como um lojista, quero saber todos os produtos vendidos por minhas filiais
 
 select
 	pv.numero_filial ,
@@ -12,7 +12,7 @@ join produto p
 where
 	pv.nome = 'Ricardo Eletro';
 
--- 2
+-- 2 Como um lojista, quero saber quais filiais estao com um rendimento acima de um certo valor
 select
 	nome ,
 	numero_filial,
@@ -27,40 +27,32 @@ join carrinho c
 	codc)
 where
 	c.finalizado = true
+	and nome = 'Ricardo Eletro'
 group by
 	nome,
 	numero_filial
 having
-	sum(pc.preco) > 500
-	-- 3
+	sum(pc.preco) > 4000;
+-- 3 Quero premiar meus clientes fieis, ou seja, clientes que apenas compraram comigo
 select
-	distinct u1.codu as cliente_fiel
+	distinct c.codu as cliente_fiel
 from
-	usuario u1 natural
-join cliente c
+	cliente c
 join pedido p
 		using(codc)
 join carrinho c2
-		using(codcar,
-	codc)
+		using(codcar, codc)
 join produtos_carrinho pc
-		using(codcar,
-	codc)
+		using(codcar, codc)
 join produto_vendido pv
 		using(codpv)
-join filial f
+join filial_lojista
 		using (codfil)
-join lojista l
-		using(codloj)
-join usuario u2 on
-	l.codu = u2.codu
 where
-	u1.codu not in (
+	c.codu not in (
 	select
-		u.codu
-	from
-		usuario u natural
-	join cliente c
+		c.codu
+	from cliente c
 	join pedido p
 			using(codc)
 	join carrinho c2
@@ -71,30 +63,22 @@ where
 		codc)
 	join produto_vendido pv
 			using(codpv)
-	join filial f
+	join filial_lojista fl
 			using (codfil)
-	join lojista l
-			using(codloj)
-	join usuario u2 on
-		l.codu = u2.codu
 	where
-		u2.nome <> 'Ricardo Eletro'
+		fl.nome <> 'Ricardo Eletro'
 );
 
 --4 - Quero saber todos os lojistas que possuem filias apenas no RS(ou um estado especifico)
 
 select
-	distinct u.nome as lojista
+	distinct nome as lojista
 from
-	usuario u
-join lojista l
-		using(codu)
-join filial f
-		using(codloj)
+	filial_lojista
 join endereco e
 		using(code)
 where
-	f.codfil not in (
+	codfil not in (
 	select
 		codfil
 	from
@@ -121,14 +105,12 @@ join filial f using(codfil)
 where not exists (
 	select *
 	from 
-		usuario u2
-	join lojista l using(codu)
-	join filial f2 using (codloj)
+		filial_lojista
 	join produto_vendido pv2 using(codfil)
 	join produtos_carrinho pc2 using(codpv)
 	join carrinho c2 using(codcar, codc)
 	where c2.finalizado = true and c2.codc = c.codc 
-		and u2.nome = 'Ricardo Eletro'
+		and nome = 'Tche Eletro'
 );
 
 
@@ -163,13 +145,11 @@ group by c.nome ;
 
 --10 - Desejando saber qual filial esta mais perto do cliente, quero saber {filail} no mesmo uf que o {cliente}
 
-select f.numero_filial 
+select numero_filial 
 from 
-	filial f 
+	filial_lojista
 join endereco e using(code) 
-join lojista l  using(codloj)
-join usuario u  using(codu)
-where u.nome = 'Tche Produtos' and e.uf in 
+where nome = 'Tche Produtos' and e.uf in 
 (select distinct e2.uf  
 from usuario u2
 join cliente c using(codu)

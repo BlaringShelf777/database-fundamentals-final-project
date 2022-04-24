@@ -359,7 +359,10 @@ from usuario natural join lojista natural join filial natural join produto_vendi
 
 create view filial_lojista
 as select *
-from usuario natural join lojista natural join filial;
+from 
+	usuario 
+join lojista using (codu)
+join filial using(codloj);
 
 
 
