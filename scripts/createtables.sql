@@ -345,7 +345,10 @@ insert into pedido values('02','01','cartao','2021-11-30');
 -- Produtos comprados
 create view produtos_comprados
 as select *
-from pedido natural join produtos_carrinho natural join carrinho natural join produto_vendido natural join produto
+from 
+	pedido
+join carrinho using(codcar,codc)
+join produtos_carrinho using(codcar,codc)
 where carrinho.finalizado = true;
 
 -- Produto vendido por filial
