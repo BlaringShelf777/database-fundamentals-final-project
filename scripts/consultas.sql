@@ -10,7 +10,7 @@ from
 join produto p
 		using(codp)
 where
-	pv.nome = 'Ricardo Eletro'
+	pv.nome = 'Ricardo Eletro';
 
 -- 2
 select
@@ -79,8 +79,9 @@ where
 		l.codu = u2.codu
 	where
 		u2.nome <> 'Ricardo Eletro'
-)
-	--4 - Quero saber todos os lojistas que possuem filias apenas no RS(ou um estado especifico)
+);
+
+--4 - Quero saber todos os lojistas que possuem filias apenas no RS(ou um estado especifico)
 
 select
 	distinct u.nome as lojista
@@ -103,7 +104,7 @@ where
 	where
 		uf <> 'rs'
 		);
---
+
 --Consulta com NOT EXISTS (revisar essa aqui com cuidado)
 --5 - Quero saber se existe um {cliente} que nao realizou compras num {lojista}
 	
@@ -128,14 +129,9 @@ where not exists (
 	join carrinho c2 using(codcar, codc)
 	where c2.finalizado = true and c2.codc = c.codc 
 		and u2.nome = 'Ricardo Eletro'
-)
-	
---Consultas com visoes
---
---Visao definida:
---
---- Produtos vendidos (pedido join produtos_carrinhos join produto_vendido join produto)
---
+);
+
+
 --6 - Quero saber todos os produtos comprados pro mim(um cliente) 
 
 select p.nome , p.modelo , p.fornecedor , pc.preco, pc.data_compra
@@ -144,8 +140,40 @@ where codc='1';
 
 
 --7 - Quero saber se já comprei um {produto} antes
---
+
+select count(pv.codp) > 0
+from produtos_comprados pc join produto_vendido pv using(codpv)
+where codc='1' and codp = '1';
+
+
 --8 - Eu como um cliente quero poder ver todos os produtos vendidos por um {fornecedor}
+
+select p.nome, p.modelo 
+from produto p join fornecedor f on p.fornecedor = f.nome 
+where fornecedor = 'samsung';
+
 --9 - Desejando saber a abraangencia de um {fornecedor}, quero todas as {categorias} que ele vende
+
+select c.nome 
+from produto p join fornecedor f on p.fornecedor = f.nome  join categoria_produto cp using(codp)
+join categoria c using(codcat)
+where fornecedor = 'adidas'
+group by c.nome ;
+
+
 --10 - Desejando saber qual filial esta mais perto do cliente, quero saber {filail} no mesmo uf que o {cliente}
--- adicionar um carrinho para usuario 1 nao aparecer
+
+select f.numero_filial 
+from 
+	filial f 
+join endereco e using(code) 
+join lojista l  using(codloj)
+join usuario u  using(codu)
+where u.nome = 'Tche Produtos' and e.uf in 
+(select distinct e2.uf  
+from usuario u2
+join cliente c using(codu)
+join endereco_cliente ec using(codc)
+join endereco e2 using(code));
+
+
