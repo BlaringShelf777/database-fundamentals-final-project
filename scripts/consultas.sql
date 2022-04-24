@@ -1,12 +1,14 @@
+
 -- 1
 
-select p.nome, pv.preco , p.modelo 
+select pv.numero_filial  ,p.nome, pv.preco , p.modelo 
 from produto_vendido_por_filial pv join produto p using(codp) 
-where pv.nome = 'Ricardo Eletro' and numero_filial = '1'
+where pv.nome = 'Ricardo Eletro'
+
 
 -- 2
 select nome ,numero_filial, sum(pc.preco) 
-from filial_lojista fl natural join produto_vendido pv join produtos_carrinho pc using(codp) join carrinho c using(codcar,codc) 
+from filial_lojista fl natural join produto_vendido pv join produtos_carrinho pc using(codpv) join carrinho c using(codcar,codc) 
 where c.finalizado = true
 group by nome, numero_filial 
 having sum(pc.preco) > 500
@@ -21,5 +23,11 @@ where u1.codu not in (
 	join filial f using (codfil) join lojista l using(codloj) join usuario u2 on l.codu = u2.codu
 	where u2.nome  <> 'Ricardo Eletro'
 )
+
+
+-- 4
+
+
+
 
 -- adicionar um carrinho para usuario 1 nao aparecer
