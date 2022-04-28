@@ -1,13 +1,13 @@
 
 export class Queries {
-  static Query1 = `
+  static AllProdutosFromSeller = `
     SELECT pv.numero_filial, p.nome, pv.preco, p.modelo
     FROM produto_vendido_por_filial pv
     JOIN produto p using(codp)
     WHERE pv.nome = '$1'
   `
 
-  static Query2 = `
+  static SellerSubsidiariesWhoSoldMoreThanGivenValue = `
     SELECT nome, numero_filial, sum(pc.preco)
     FROM filial_lojista fl 
     NATURAL JOIN produto_vendido pv
@@ -18,7 +18,7 @@ export class Queries {
     HAVING sum(pc.preco) > $2;
   `
 
-  static Query3 = `
+  static FaithfullClientsBySellerName = `
     SELECT distinct c.codu as cliente_fiel
     FROM cliente c
     JOIN pedido p using(codc)
@@ -38,7 +38,7 @@ export class Queries {
     )
   `
 
-  static Query4 = `
+  static SellersWhoHaveSubsidiariesInOnlyOneState = `
     SELECT distinct nome as lojista
     FROM filial_lojista
     JOIN endereco e using(code)
@@ -50,32 +50,49 @@ export class Queries {
     )
   `
 
-  // Revisão
-  static Query5 = ''
+  static SellersWhoHaveSubsidiariesInUniqueStates = `
+    SELECT distinct fl.nome
+    FROM filial_lojista fl
+    WHERE NOT EXISTS (
+      SELECT *
+      FROM filial f
+      JOIN endereco e using(code)
+      WHERE f.codloj <> fl.codloj and e.uf in (
+        SELECT distinct e2.uf
+        FROM filial f2
+        JOIN endereco e2 using(code)
+        WHERE f2.codloj = fl.codloj
+      )
+    )
+  `
 
-  static Query6 = `
-    SELECT p.nome , p.modelo , p.fornecedor , pc.preco, pc.data_compra
+  static ProductsBoughtByGivenClient = `
+    SELECT p.nome, p.modelo, p.fornecedor, pc.preco, pc.data_compra
     FROM produtos_comprados pc 
     JOIN produto_vendido pv using(codpv) 
     JOIN produto p using(codp)
     WHERE codc='$1'
   `
 
-  static Query7 = `
-    SELECT count(pv.codp) > 0
-    FROM produtos_comprados pc
-    JOIN produto_vendido pv using(codpv)
-    WHERE codc='$1' AND codp = '$2'
+  static ProductsByCategoryAndValuation = `
+    SELECT p.nome , p.modelo , avg(nota)
+    FROM produto p 
+    JOIN avaliacao a using(codp)
+    JOIN categoria_produto cp using(codp)
+    JOIN categoria c using (codcat)
+    WHERE c.nome = '$1'
+    GROUP BY p.codp , p.nome, p.modelo 
+    ORDER BY avg(nota) desc
   `
 
-  static Query8 = `
+  static AllProductsFromGivenProvider = `
     SELECT p.nome, p.modelo 
     FROM produto p
     JOIN fornecedor f ON p.fornecedor = f.nome 
     WHERE fornecedor = '$1'
   `
 
-  static Query9 = `
+  static AllCategoriesFromGivenProvider = `
     SELECT c.nome 
     FROM produto p
     JOIN fornecedor f ON p.fornecedor = f.nome
@@ -85,7 +102,7 @@ export class Queries {
     GROUP BY c.nome
   `
 
-  static Query10 = `
+  static CloseSubsidiariesFromGivenClient = `
     SELECT numero_filial 
     FROM filial_lojista
     JOIN endereco e using(code) 
@@ -95,6 +112,17 @@ export class Queries {
       JOIN cliente c using(codu)
       JOIN endereco_cliente ec using(codc)
       JOIN endereco e2 using(code)
+      WHERE c.codu = '$2'
     )
+  `
+
+  static CartProductsFromGivenClient = `
+    SELECT p.nome, pc.preco, pc.frete 
+    FROM cliente c 
+    JOIN carrinho c2 using(codc)
+    JOIN produtos_carrinho pc using(codcar,codc)
+    JOIN produto_vendido pv using(codpv)
+    JOIN produto p using(codp)
+    WHERE finalizado=false and codc='$1'
   `
 }
