@@ -119,7 +119,7 @@ from produto p
 	join categoria c using (codcat)
 where c.nome = 'eletrodomestico'
 group by p.codp , p.nome, p.modelo 
-order by  avg(nota) desc
+order by  avg(nota) desc;
 
 -- Eu como um cliente quero poder ver todos os produtos vendidos por um {fornecedor}
 select
@@ -160,6 +160,7 @@ where
 			join cliente c using(codu)
 			join endereco_cliente ec using(codc)
 			join endereco e2 using(code)
+			where c.codu = '1'
 	);
 
 -- Quero saber os produtos no meu carrinho aberto
@@ -169,5 +170,5 @@ from cliente c join carrinho c2 using(codc)
 join produtos_carrinho pc using(codcar,codc)
 join produto_vendido pv using(codpv)
 join produto p using(codp)
-where finalizado=false and codc='1'
+where finalizado=false and codc='1';
 
