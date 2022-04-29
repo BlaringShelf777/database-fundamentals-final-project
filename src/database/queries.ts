@@ -4,7 +4,7 @@ export class Queries {
     SELECT pv.numero_filial, p.nome, pv.preco, p.modelo
     FROM produto_vendido_por_filial pv
     JOIN produto p using(codp)
-    WHERE pv.nome = '$1'
+    WHERE pv.nome = $1
   `
 
   static SellerSubsidiariesWhoSoldMoreThanGivenValue = `
@@ -13,7 +13,7 @@ export class Queries {
     NATURAL JOIN produto_vendido pv
     JOIN produtos_carrinho pc using(codpv)
     JOIN carrinho c using(codcar, codc)
-    WHERE c.finalizado = true AND nome = '$1'
+    WHERE c.finalizado = true AND nome = $1
     GROUP BY nome, numero_filial
     HAVING sum(pc.preco) > $2;
   `
@@ -34,11 +34,11 @@ export class Queries {
       JOIN produtos_carrinho pc using(codcar, codc)
       JOIN produto_vendido pv using(codpv)
       JOIN filial_lojista fl using (codfil)
-      WHERE fl.nome <> '$1'
+      WHERE fl.nome <> $1
     )
   `
 
-  static SellersWhoHaveSubsidiariesInOnlyOneState = `
+  static SellersWhoHaveSubsidiariesInOnlyGivenState = `
     SELECT distinct nome as lojista
     FROM filial_lojista
     JOIN endereco e using(code)
@@ -46,7 +46,7 @@ export class Queries {
       SELECT codfil
       FROM filial f2
       JOIN endereco e2 using(code)
-      WHERE uf <> '$1'
+      WHERE uf <> $1
     )
   `
 
@@ -71,7 +71,7 @@ export class Queries {
     FROM produtos_comprados pc 
     JOIN produto_vendido pv using(codpv) 
     JOIN produto p using(codp)
-    WHERE codc='$1'
+    WHERE codc = $1
   `
 
   static ProductsByCategoryAndValuation = `
@@ -80,7 +80,7 @@ export class Queries {
     JOIN avaliacao a using(codp)
     JOIN categoria_produto cp using(codp)
     JOIN categoria c using (codcat)
-    WHERE c.nome = '$1'
+    WHERE c.nome = $1
     GROUP BY p.codp , p.nome, p.modelo 
     ORDER BY avg(nota) desc
   `
@@ -89,7 +89,7 @@ export class Queries {
     SELECT p.nome, p.modelo 
     FROM produto p
     JOIN fornecedor f ON p.fornecedor = f.nome 
-    WHERE fornecedor = '$1'
+    WHERE fornecedor = $1
   `
 
   static AllCategoriesFromGivenProvider = `
@@ -98,21 +98,21 @@ export class Queries {
     JOIN fornecedor f ON p.fornecedor = f.nome
     JOIN categoria_produto cp using(codp)
     JOIN categoria c using(codcat)
-    WHERE fornecedor = '$1'
+    WHERE fornecedor = $1
     GROUP BY c.nome
   `
 
-  static CloseSubsidiariesFromGivenClient = `
+  static ClosestSubsidiariesFromGivenClient = `
     SELECT numero_filial 
     FROM filial_lojista
     JOIN endereco e using(code) 
-    WHERE nome = '$1' AND e.uf IN (
+    WHERE nome = $1 AND e.uf IN (
       SELECT distinct e2.uf  
       FROM usuario u2
       JOIN cliente c using(codu)
       JOIN endereco_cliente ec using(codc)
       JOIN endereco e2 using(code)
-      WHERE c.codu = '$2'
+      WHERE c.codu = $2
     )
   `
 
@@ -123,6 +123,6 @@ export class Queries {
     JOIN produtos_carrinho pc using(codcar,codc)
     JOIN produto_vendido pv using(codpv)
     JOIN produto p using(codp)
-    WHERE finalizado=false and codc='$1'
+    WHERE finalizado=false and codc = $1
   `
 }

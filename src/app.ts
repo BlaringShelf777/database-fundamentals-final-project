@@ -1,15 +1,19 @@
 
 import express from 'express'
 
-import client from './server'
+import { clientRouter } from './routes/client.routes'
+import { productRouter } from './routes/products.routes'
+import { providerRouter } from './routes/providers.routes'
+import { sellerRouter } from './routes/sellers.routes'
 
 export const app = express()
 
 app.use(express.json())
 
-// Just an example (to be removed)
-app.get('/', async (req, res) => {
-  const dbResponse1 = await client.query('SELECT * from Test', [])
+app.use('/seller', sellerRouter)
 
-  res.json(dbResponse1.rows)
-})
+app.use('/provider', providerRouter)
+
+app.use('/product', productRouter)
+
+app.use('/client', clientRouter)
